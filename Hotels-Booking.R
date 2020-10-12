@@ -35,19 +35,30 @@ hotels %>%
   mutate(stays_nights= stays_in_weekend_nights + stays_in_week_nights)->hotels_nights
 
 
-#parentage of which month is 
-total_count <- sum(months_count$n)
+#parentage of which month is there more reservation
 
 hotels %>% 
-  count(arrival_date_month)-> months_count
+  group_by(arrival_date_month) %>% 
+  summarise(count=n(),
+            percantage=n()/nrow(hotels))->months_count
+#pie chart of parentage of all months
+#reference : https://www.youtube.com/watch?v=bzRD_nvvIVI 
+months_count
+pie <- ggplot(data=months_count,aes(x="",y=percantage,fill=arrival_date_month)) +
+  geom_col(color= "white")+
+  coord_polar("y",start = 0)+
+  geom_text(aes(label=paste0(round(percantage*100),"%")),
+            position = position_stack(vjust=0.5))
+pie  
 
-months_count %>% 
-  mutate(parentage= (n/total_count)*100)->months_count
 
-months_count %>% 
-  pie(parentage,labels =arrival_date_month)#'x' values must be positive.
+#how mach family they are got reservation
+hotels %>% 
+  select(reservation_status,adults, children,babies) %>% 
+  filter(reservation_status == "Check-Out") %>% 
+  mutate(family=case_when(children+babies>0~ "yes",TRUE ~ "No"))->hotels_family
 
-summary(months_count)
-
-
+hotels_family %>% 
+  group_by(family) %>% 
+  summarise(count=n())
 
