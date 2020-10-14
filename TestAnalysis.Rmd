@@ -1,0 +1,58 @@
+---
+title: "Chick Weight Analysis"
+author: "team-4"
+date: "04/10/2020"
+output: html_document
+---
+
+```{r library, include=FALSE}
+library(tidyverse)
+library(knitr)
+```
+
+**our dataset:**
+Chick Weight
+
+
+ **teams:**  
+ - Bashayr  
+ - Tahani  
+ - Ohoud  
+ - Sara  
+ - Fatima  
+ - Safa
+ 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## summary
+
+```{r chicksts, echo=FALSE}
+str(chickwts)
+
+summary(chickwts)
+
+glimpse(chickwts)
+```
+
+## Plots
+
+```{r plots, echo=FALSE}
+plot(chickwts)
+```
+
+## sd and mean of weight
+
+```{r statics, echo=FALSE}
+chickwts %>%
+  group_by(feed) %>%
+  summarise(average =mean(weight), stdev = sd(weight))->chick_mean
+kable(chick_mean)
+
+```
+
+
+
+
