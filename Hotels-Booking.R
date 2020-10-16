@@ -10,6 +10,7 @@ library(knitr)
 # Get the Data
 hotels <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-11/hotels.csv')
 hotels
+
 # Get familiar with dataset
 summary(hotels)
 glimpse(hotels)
@@ -35,24 +36,25 @@ hotels %>%
   mutate(stays_nights= stays_in_weekend_nights + stays_in_week_nights)->hotels_nights
 
 
-#parentage of which month is there more reservation
-
+#Percentage of which month is there more reservation
 hotels %>% 
   group_by(arrival_date_month) %>% 
   summarise(count=n(),
-            percantage=n()/nrow(hotels))->months_count
-#pie chart of parentage of all months
+            Percentage=n()/nrow(hotels))->months_count
+
+
+#Pie chart of parentage of all months
 #reference : https://www.youtube.com/watch?v=bzRD_nvvIVI 
 months_count
-pie <- ggplot(data=months_count,aes(x="",y=percantage,fill=arrival_date_month)) +
+pie <- ggplot(data=months_count,aes(x="",y=Percentage,fill=arrival_date_month)) +
   geom_col(color= "white")+
   coord_polar("y",start = 0)+
-  geom_text(aes(label=paste0(round(percantage*100),"%")),
+  geom_text(aes(label=paste0(round(Percentage*100),"%")),
             position = position_stack(vjust=0.5))
 pie  
 
 
-#how mach family they are got reservation
+#How mach family they are got reservation
 hotels %>% 
   select(reservation_status,adults, children,babies) %>% 
   filter(reservation_status == "Check-Out") %>% 
@@ -61,4 +63,25 @@ hotels %>%
 hotels_family %>% 
   group_by(family) %>% 
   summarise(count=n())
+
+
+#How many customers take car parking space 
+hotels %>% 
+  select(adults, babies, children,required_car_parking_spaces) %>% 
+  filter(babies+children == 0 & required_car_parking_spaces >= 1)#6,314 
+
+#How many customers that had kids take car parking space 
+hotels %>% 
+  select(adults, babies, children,required_car_parking_spaces) %>% 
+  filter(babies+children != 0 & required_car_parking_spaces >= 1) #1,102
+
+#what is type of customer that take car parking space 
+hotels %>% 
+  select(customer_type,required_car_parking_spaces) %>% 
+  filter(required_car_parking_spaces >= 1)#7,416
+
+
+
+
+
 
