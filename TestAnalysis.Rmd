@@ -37,11 +37,6 @@ summary(chickwts)
 glimpse(chickwts)
 ```
 
-## Plots
-
-```{r plots, echo=FALSE}
-plot(chickwts)
-```
 
 ## sd and mean of weight
 
@@ -54,5 +49,15 @@ kable(chick_mean)
 ```
 
 
+## polots
+
+```{r}
+ggplot(chickwts, aes(feed, weight))+
+  geom_jitter(width = 0.3)+
+  stat_summary(fun.data = mean_sdl,
+               fun.args = list(mult=1),
+               col="red")
+
+```
 
 
