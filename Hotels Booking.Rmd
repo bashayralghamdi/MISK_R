@@ -2,36 +2,41 @@
 title: "Hotels"
 author: "Bashayr Alghamdi"
 date: "10/10/2020"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 5 
+  
 ---
 ```{r library, include=FALSE}
 library(tidyverse)
 library(knitr)
 ```
 
-```{r setup, include=FALSE}
-#knitr::opts_chunk$set(echo = TRUE)
-```
 
 ```{r setup, include=FALSE}
-hotels <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-11/hotels.csv')
-
+opts_chunk$set(echo = FALSE)
 
 ```
+
 ## Hotels booking analysis
 
 this project about Hotel booking.
 the dataset comes from an open hotel booking demand dataset from Antonio,Almeida and Nunes, 2019.
 
-
-```{r hotels, include=FALSE}
-summary(hotels)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
+```{r data set,}
+hotels <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-11/hotels.csv')
 
 ```
+
+
+```{r hotels summary}
+summary(hotels) 
+```
+
+
+
+
