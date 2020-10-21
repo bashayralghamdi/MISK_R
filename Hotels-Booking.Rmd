@@ -8,31 +8,26 @@ output:
     toc_float:
       collapsed: false
       smooth_scroll: false
-    toc_depth: 3 
-  
+    toc_depth: 5 
 ---
-```{r library, include=FALSE}
-library(tidyverse)
-library(knitr)
-```
-
 
 ```{r setup, include=FALSE}
-opts_chunk$set(echo = FALSE)
-
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(knitr)
 ```
 
 ## Hotels booking analysis
 
 this project about Hotel booking.
-the dataset comes from an open hotel booking demand dataset from Antonio,Almeida and Nunes, 2019.
+the dataset comes from an open hotel booking from [tidy tuesday](https://github.com/rfordatascience/tidytuesday/tree/master/data/2020/2020-02-11) demand dataset from Antonio,Almeida and Nunes, 2019.
 
-
-
-```{r data set,include=FALSE}
-hotels <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-11/hotels.csv')
-
+```{r data set,}
+hotels <- readr::read_csv("Data/hotels.csv")
 ```
+
+(What are the reserarch questions that you can answer using this data set? What kind of insights can I gather using this data set? or predictions?)
+
 
 ### Data set
 
@@ -44,11 +39,13 @@ Here the summary of the data set
 ```{r hotels summary}
 
 summary(hotels) 
-  
+
 ```
 
 ### missing value
-When we focus on summary we will find the children column has 4 NA that means there is 4 missing value 
+
+When we focus on summary we will find the children column has 4 NA that means there is 4 missing values 
+
 ```{r}
 summary(hotels$children)
 ```
@@ -69,21 +66,35 @@ summary(hotels_new$children)
 ## Date 
 
 ### Arrival date
+
 we want gather the date of arrival in one column separated by "/"
 
 
 ```{r}
-hotels %>%
-  unite(arrival_data,
-        arrival_date_day_of_month,
-        arrival_date_month,
-        arrival_date_year,
-        sep="/")->hotels_date 
+
+library(lubridate)
+
+
+hotels <- hotels %>% 
+  mutate(arrival_date = dmy(paste(
+    arrival_date_day_of_month,
+    arrival_date_month,
+    arrival_date_year)))
+hotels$arrival_date[10]
+
+# hotels %>%
+#   unite(arrival_data,
+#         arrival_date_day_of_month,
+#         arrival_date_month,
+#         arrival_date_year,
+#         sep="/")->hotels_date 
 
 hotels_date$arrival_data[10]
 #How can I change the month from name to number
 ```
+
 ### months 
+
 Percentage of which month is there more reservation
 
 ```{r}
@@ -93,10 +104,11 @@ hotels %>%
             Percentage=(n()/nrow(hotels))*100)->months_count
 months_count
 ```
+
 ```{r}
 #Pie chart of parentage of all months
 months_count
- pie <- ggplot(data=months_count,aes(x="",y=Percentage,fill=arrival_date_month)) +
+pie <- ggplot(data=months_count,aes(x="",y=Percentage,fill=arrival_date_month)) +
   geom_col(color= "white")+
   coord_polar("y",start = 0)+
   geom_text(aes(label=paste0(round(Percentage),"%")),
@@ -106,11 +118,11 @@ months_count
 pie 
 ggplot(data=months_count,aes(x=arrival_date_month,y=Percentage,fill=arrival_date_month))+
   geom_col(position = "dodge", shape = 16, alpha = 0.6)+
-    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none")
 
-
 ```
+
 the result is August is the most month that had more reservation .in the other hand July is the lowest.
 
 
@@ -138,11 +150,13 @@ hotels_kids %>%
   summarise(count=n()) %>% 
   ggplot(aes(x = arrival_date_month, y = count, fill = have_kids)) +
   geom_bar(stat = "identity", shape = 16, alpha = 0.6)+
-    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none") 
-  
+
 ```
+
 ## car parking
+
 How many customers that had kids take car parking space
 
 ```{r}
@@ -158,9 +172,9 @@ hotels %>%
   ggplot(aes(x = number_of_customer,y = required_car_parking_spaces))+
   geom_jitter(alpha = 0.25)+
   scale_y_continuous(limits = c(0,3),
-                   expand = c(0,0)) +
+                     expand = c(0,0)) +
   scale_x_continuous(limits = c(1,6),
-                   expand = c(0,0))
+                     expand = c(0,0))
 ```
 
 How many customers take car parking space 
@@ -183,8 +197,6 @@ hotels %>%
                      expand = c(0,0))
 ```
 
-
-
 ## Night
 
 what the total of the night that the customer stayed 
@@ -193,7 +205,7 @@ what the total of the night that the customer stayed
 #calculate total of the night that the customer stayed  
 hotels %>% 
   select(stays_in_weekend_nights,stays_in_week_nights) %>% 
-  mutate(stays_nights= stays_in_weekend_nights + stays_in_week_nights)->hotels_nights
+  mutate(stays_nights = stays_in_weekend_nights + stays_in_week_nights) -> hotels_nights
 hotels_nights
 ```
 
