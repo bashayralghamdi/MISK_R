@@ -33,7 +33,16 @@ hotels %>%
         sep="-")->hotels_date 
 
 hotels_date
+
+library(lubridate)
+
 glimpse(hotels_date)
+hotels <- hotels %>% 
+  mutate(arrival_date = dmy(paste(
+    arrival_date_day_of_month,
+    arrival_date_month,
+    arrival_date_year)))
+hotels$arrival_date[10]
 
 #calculate total of the night that the customer stayed  
 hotels %>% 
@@ -122,6 +131,39 @@ hotels %>%
   select(customer_type,required_car_parking_spaces) %>% 
   filter(required_car_parking_spaces >= 1)#7,416
 
+hotels %>% 
+  select(adults, babies, children,required_car_parking_spaces) %>% 
+  filter(babies+children != 0 & required_car_parking_spaces >= 1) %>% 
+  summarise(count=n())#1,102
 
+hotels %>% 
+  select(adults, babies, children,required_car_parking_spaces) %>% 
+  filter(babies+children != 0 & required_car_parking_spaces >= 1) %>% 
+  mutate(number_of_customer=adults+babies+children) %>% 
+  ggplot(aes(x = number_of_customer,y = required_car_parking_spaces))+
+  geom_jitter(alpha = 0.25)+
+  scale_y_continuous(limits = c(0,3),
+                     expand = c(0,0)) +
+  scale_x_continuous(limits = c(1,6),
+                     expand = c(0,0))
+
+
+#How many customers take car parking space 
+
+hotels %>% 
+  select(adults, babies, children,required_car_parking_spaces) %>% 
+  filter(babies+children == 0 & required_car_parking_spaces >= 1) %>% 
+  summarise(count=n())#6,314 
+
+hotels %>% 
+  select(adults, babies, children,required_car_parking_spaces) %>% 
+  filter(babies+children == 0 & required_car_parking_spaces >= 1) %>% 
+  mutate(number_of_customer=adults+babies+children) %>% 
+  ggplot(aes(x = number_of_customer,y = required_car_parking_spaces))+
+  geom_jitter(alpha = 0.25)+
+  scale_y_continuous(limits = c(0,10),
+                     expand = c(0,0)) +
+  scale_x_continuous(limits = c(0,5),
+                     expand = c(0,0))
 
 
